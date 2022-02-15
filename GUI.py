@@ -14,6 +14,8 @@ class MainApp(QMainWindow):
         self.width = 900
         self.height = 500
 
+        self.imageWidth=150
+        self.imageHeight = 200
         self.InitWindow()
 
     def InitWindow(self, *args, **kwargs):
@@ -24,18 +26,26 @@ class MainApp(QMainWindow):
         #Ảnh Query
         self.query_image = QLabel(self)
         self.query_image.setStyleSheet(" border: 4px dashed #aaa;")
-        self.query_image.resize(150, 130)
-        self.query_image.move(450, 350)
+        self.query_image.resize(self.imageWidth,  self.imageHeight)
+        self.query_image.move(self.width-200, 10)
         #Button chọn ảnh
         self.browser_button = QPushButton('Browse Image', self)
-        self.browser_button.setToolTip('This is an example button')
-        self.browser_button.move(300, 350)
+        self.browser_button.setToolTip('Click This To Choose Your Image')
+        self.browser_button.resize(155,20)
+        self.browser_button.move(self.width-200, 230)
         self.browser_button.clicked.connect(self.browserImageClick)
         #Button Query
         self.query_button = QPushButton('Query Image', self)
-        self.query_button.setToolTip('This is an example button')
-        self.query_button.move(600, 350)
+        self.query_button.setToolTip('Retrieval Similar Images')
+        self.query_button.resize(155, 20)
+        self.query_button.move(self.width-200, 260)
         self.query_button.clicked.connect(self.retrievalImage)
+        # Button Clear
+        self.clear_button = QPushButton('Clear', self)
+        self.clear_button.setToolTip('Clear Contents')
+        self.clear_button.resize(155, 20)
+        self.clear_button.move(self.width - 200, 290)
+        self.clear_button.clicked.connect(self.clear)
 
     def browserImageClick(self):
         selected_filter = "*.png *.jpg *.bmp"
@@ -43,14 +53,39 @@ class MainApp(QMainWindow):
         self.imagePath = filename[0]
 
         pixmap = QPixmap(self.imagePath)
-        pixmap=pixmap.scaled(150,130, Qt.KeepAspectRatio)
+        pixmap=pixmap.scaled(self.imageWidth,  self.imageHeight, Qt.KeepAspectRatio)
 
         self.query_image.resize(pixmap.width(), pixmap.height())
         self.query_image.setPixmap(pixmap)
 
     def retrievalImage(self):
-        retrieval(self.imagePath)
+        if( self.imagePath == None):
+            dlg = CustomDialog()
+            dlg.exec()
+        else:
+            retrieval(self.imagePath)
 
+    def clear(self):
+        self.imagePath = None
+        self.query_image.clear()
+
+#Custom Dialog
+class CustomDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Empty Image")
+
+        QBtn = QDialogButtonBox.Ok
+
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+
+        self.layout = QVBoxLayout()
+        message = QLabel("Please Choose Your Image?")
+        self.layout.addWidget(message)
+        self.layout.addWidget(self.buttonBox)
+        self.setLayout(self.layout)
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainApp()
