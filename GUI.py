@@ -6,17 +6,14 @@ from PyQt5.QtCore import *
 from main import retrieval
 
 class MainApp(QMainWindow):
-    width = 900
-    height = 500
-    window_Title = "Image Retrieval"
 
     def __init__(self):
         super().__init__()
-
+        self.imagePath = None
         self.window_Title = "Image Retrieval"
         self.width = 900
         self.height = 500
-        self.imagePath=None
+
         self.InitWindow()
 
     def InitWindow(self, *args, **kwargs):
@@ -39,17 +36,21 @@ class MainApp(QMainWindow):
         self.query_button.setToolTip('This is an example button')
         self.query_button.move(600, 350)
         self.query_button.clicked.connect(self.retrievalImage)
+
     def browserImageClick(self):
         selected_filter = "*.png *.jpg *.bmp"
         filename=QFileDialog.getOpenFileName(self,'Query Image',filter=selected_filter)
         self.imagePath = filename[0]
 
         pixmap = QPixmap(self.imagePath)
+        pixmap=pixmap.scaled(150,130, Qt.KeepAspectRatio)
+
         self.query_image.resize(pixmap.width(), pixmap.height())
         self.query_image.setPixmap(pixmap)
 
     def retrievalImage(self):
         retrieval(self.imagePath)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainApp()
