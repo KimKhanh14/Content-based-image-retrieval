@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+from matplotlib import *
 from main import retrieval
 
 class MainApp(QMainWindow):
@@ -22,7 +23,11 @@ class MainApp(QMainWindow):
         super().__init__(*args, **kwargs)
         self.setFixedSize(self.width,self.height)
         self.setWindowTitle(self.window_Title)
-
+        #Ảnh kết quả
+        self.result_image=QLabel(self)
+        self.result_image.setStyleSheet(" border: 4px dashed #aaa;")
+        self.result_image.resize(670, 480)
+        self.result_image.move(10, 10)
         #Ảnh Query
         self.query_image = QLabel(self)
         self.query_image.setStyleSheet(" border: 4px dashed #aaa;")
@@ -52,22 +57,26 @@ class MainApp(QMainWindow):
         filename=QFileDialog.getOpenFileName(self,'Query Image',filter=selected_filter)
         self.imagePath = filename[0]
 
-        pixmap = QPixmap(self.imagePath)
-        pixmap=pixmap.scaled(self.imageWidth,  self.imageHeight, Qt.KeepAspectRatio)
+        brImg_pixmap = QPixmap(self.imagePath)
 
-        self.query_image.resize(pixmap.width(), pixmap.height())
-        self.query_image.setPixmap(pixmap)
+        brImg_pixmap=brImg_pixmap.scaled(self.imageWidth,self.imageHeight)
+        self.query_image.resize(brImg_pixmap.width(), brImg_pixmap.height())
+        self.query_image.setPixmap(brImg_pixmap)
 
     def retrievalImage(self):
         if( self.imagePath == None):
             dlg = CustomDialog()
             dlg.exec()
         else:
-            retrieval(self.imagePath)
+            result_pixmap=retrieval(self.imagePath)
+            result_pixmap = result_pixmap.scaled(670, 480)
+            self.result_image.resize(result_pixmap.width(), result_pixmap.height())
+            self.result_image.setPixmap(result_pixmap)
 
     def clear(self):
         self.imagePath = None
         self.query_image.clear()
+        self.result_image.clear()
 
 #Custom Dialog
 class CustomDialog(QDialog):

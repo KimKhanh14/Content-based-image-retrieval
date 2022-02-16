@@ -1,18 +1,13 @@
-import os
+
 import math
 import pickle
 import numpy as np
-
-import tensorflow as tf
-from tensorflow import keras
-
+from PyQt5.QtGui import QPixmap, QImage
 from PIL import Image
-from keras.preprocessing import image
-from keras.applications.vgg16 import VGG16, preprocess_input
-from keras.models import Model
-
 from extract_model import extracting_model
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib import cm
 def retrieval(path):
     # Dinh nghia anh can tim kiem
     search_image = path
@@ -41,7 +36,7 @@ def retrieval(path):
     axes = []
     grid_size = int(math.sqrt(K))
     fig = plt.figure(figsize=(10,5))
-
+    canvas = FigureCanvas(fig)
 
     for id in range(K):
         draw_image = nearest_image[id]
@@ -51,4 +46,13 @@ def retrieval(path):
         plt.imshow(Image.open(draw_image[0]))
 
     fig.tight_layout()
-    plt.show()
+    #plt.show()
+
+    #conver to pixmap
+
+    canvas.draw()
+
+    width, height = canvas.get_width_height()
+    im = QImage(canvas.buffer_rgba(), width, height, QImage.Format_RGBA8888)
+
+    return QPixmap(im)
