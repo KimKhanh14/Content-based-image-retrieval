@@ -7,7 +7,7 @@ from PIL import Image
 from extract_model import extracting_model
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib import cm
+
 def retrieval(path):
     # Dinh nghia anh can tim kiem
     search_image = path
@@ -16,7 +16,7 @@ def retrieval(path):
 
     # Trich dac trung anh search
     search_vector = model.extract_vector(search_image)
-    # Load 4700 vector tu vectors.pkl ra bien
+    # Load  vector tu vectors.pkl ra bien
     vectors = pickle.load(open("vectors.pkl","rb"))
     paths = pickle.load(open("paths.pkl","rb"))
 
@@ -31,8 +31,6 @@ def retrieval(path):
     nearest_image = [(paths[id], distance[id]) for id in ids]
 
     # Ve len man hinh cac anh gan nhat do
-
-
     axes = []
     grid_size = int(math.sqrt(K))
     fig = plt.figure(figsize=(10,5))
@@ -46,12 +44,8 @@ def retrieval(path):
         plt.imshow(Image.open(draw_image[0]))
 
     fig.tight_layout()
-    #plt.show()
-
     #conver to pixmap
-
     canvas.draw()
-
     width, height = canvas.get_width_height()
     im = QImage(canvas.buffer_rgba(), width, height, QImage.Format_RGBA8888)
 
