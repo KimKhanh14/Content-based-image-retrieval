@@ -4,6 +4,7 @@
 # Contributors
 This project is carried out by 404-Noname members, including:
 - [nguyenanhtuan-19127614](https://github.com/nguyenanhtuan-19127614)
+- [HuyVo](https://github.com/GoldenDavid)
 - [Kimkhanh14](https://github.com/KimKhanh14)
 
 # License
